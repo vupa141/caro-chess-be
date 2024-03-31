@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { extractToken } from '../helpers/commonFunction';
-import jwt from 'jsonwebtoken';
+import { verify } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -24,10 +24,7 @@ export class AuthenticationGuard implements CanActivate {
         const publicKey = process.env.JWT_TOKEN_SECRET_KEY
             .replace(/\\n/g, '\n');
         try {
-            return await jwt.verify(token, publicKey, {
-                ignoreExpiration: false,
-                algorithms: ['RS256'],
-            });
+            return await verify(token, publicKey);
         } catch (error) {
             throw new UnauthorizedException();
         }

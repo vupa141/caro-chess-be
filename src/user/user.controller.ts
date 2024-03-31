@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, HttpCode, UseGuards, HttpException } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpCode, UseGuards, HttpException, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
 import { UserDto } from './dto';
@@ -68,14 +68,25 @@ export class UserController {
     }
 
     @UseGuards(AuthenticationGuard)
-    @Post('/refresh-token')
-    getRefreshToken() {
-
+    @Get('/access-token')
+    async getAccessToken(@Body() { refreshToken } : { refreshToken: string }, @Req() req) {
+        const token = await this.UserTokenService.findToken(refreshToken);
+        if (!token) {
+            throw new HttpException(
+                new ErrorResponse(HTTP_STATUS_CODE.BAD_REQUEST, 'Refresh Token Invalid', [{ key: 'refeshToken' }]),
+                HTTP_STATUS_CODE.BAD_REQUEST
+            );
+        }
+        const accessToken = signToken({  id: req.loginUser._id });
+        return new SuccessResponse({ accessToken });
     }
 
     @UseGuards(AuthenticationGuard)
-    @Get('/who-am-i')
-    whoAmI() {
-
+    @Get('/user-profile')
+    async whoAmI(@Req() req) {
+        const user = await this.userService.findById(req.loginUser.id);
+        return new SuccessResponse({
+            profile: user
+        })
     }
 }

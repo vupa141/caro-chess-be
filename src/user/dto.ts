@@ -1,9 +1,39 @@
-import { IsNotEmpty, Matches } from 'class-validator';
-import { PASSWORD_REGEX } from 'src/common/constant';
+import { IsNotEmpty, Matches, IsEnum } from 'class-validator';
+import { EMAIL_REGEX, PASSWORD_REGEX, USER_STATUS, USER_TYPE } from 'src/common/constant';
 
 export class UserDto {
     @IsNotEmpty()
     username: string;   
     @Matches(PASSWORD_REGEX)
     password: string;
+    @Matches(EMAIL_REGEX)
+    email: string;
+    @IsEnum(USER_STATUS)
+    status?: string;
+}
+
+export class GuestUserDto {
+    @IsNotEmpty()
+    username: string;   
+    @IsEnum(USER_TYPE)
+    type: string;   
+}
+
+export class GuestLoginDto {
+    @IsNotEmpty()
+    id: string;  
+}
+
+export class UpdateUserDto {
+    @Matches(PASSWORD_REGEX)
+    password?: string;
+    @IsEnum(USER_STATUS)
+    status?: string;
+}
+
+export class ResetPasswordDto {
+    @Matches(PASSWORD_REGEX)
+    password?: string;
+    @IsNotEmpty()
+    token: string;  
 }

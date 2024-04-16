@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Patch, HttpCode, UseGuards, HttpException, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthenticationGuard } from 'src/common/guards/authentication.guard';
-import { GuestLoginDto, GuestUserDto, ResetPasswordDto, UserDto } from './dto';
+import { GuestLoginDto, GuestUserDto, LoginDto, RegisterDto, ResetPasswordDto, UserDto } from './dto';
 import { HTTP_STATUS_CODE, USER_STATUS, USER_TOKEN_TYPE, USER_TYPE } from 'src/common/constant';
 import { ErrorResponse, SuccessResponse } from 'src/common/helpers/response';
 import { UserTokenService } from './userToken.service';
@@ -18,7 +18,7 @@ export class UserController {
 
     @Post('/login')
     @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-    async logIn(@Body() userDto: UserDto) {
+    async logIn(@Body() userDto: LoginDto) {
         const { email, password } = userDto;
         const user = await this.userService.findByEmail(email);
         if (!user) {
@@ -51,12 +51,12 @@ export class UserController {
 
     @Post('/signup')
     @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-    async signUp(@Body() userDto: UserDto) {
+    async signUp(@Body() userDto: RegisterDto) {
         const { username, email, password } = userDto;
         const user = await this.userService.findByEmail(email);
         if (user) {
             throw new HttpException(
-                new ErrorResponse(HTTP_STATUS_CODE.BAD_REQUEST, 'User Exist', [{ key: 'email' }]),
+                new ErrorResponse(HTTP_STATUS_CODE.BAD_REQUEST, 'Email Exist', [{ key: 'email' }]),
                 HTTP_STATUS_CODE.BAD_REQUEST
             );            
         }
@@ -97,7 +97,7 @@ export class UserController {
         }
     }
 
-    @Post('/forgot-password-token')
+    @Post('/forgot-password')
     @HttpCode(HTTP_STATUS_CODE.SUCCESS)
     async forgotPasswordToken(@Body() { email }: { email: string}) {
         const user = await this.userService.findByEmail(email);
@@ -155,7 +155,7 @@ export class UserController {
     }
 
     @UseGuards(AuthenticationGuard)
-    @Get('/user-profile')
+    @Get('/profile')
     async whoAmI(@Req() req) {
         const user = await this.userService.findById(req.loginUser.id);
         return new SuccessResponse({
@@ -202,7 +202,7 @@ export class UserController {
     }
 
     // TO DO
-    @Patch('/update-user-type')
+    @Patch('/update-type')
     async updateUserType(@Body() data: any) {
 
     }

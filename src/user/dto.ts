@@ -9,7 +9,23 @@ export class UserDto {
     @Matches(EMAIL_REGEX)
     email: string;
     @IsEnum(USER_STATUS)
-    status?: string;
+    status: string;
+}
+
+export class LoginDto {
+    @IsNotEmpty()
+    password: string;
+    @IsNotEmpty()
+    email: string;
+}
+
+export class RegisterDto {
+    @IsNotEmpty()
+    username: string;   
+    @Matches(PASSWORD_REGEX)
+    password: string;
+    @Matches(EMAIL_REGEX)
+    email: string;
 }
 
 export class GuestUserDto {

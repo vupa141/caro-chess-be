@@ -21,8 +21,10 @@ export class AuthenticationGuard implements CanActivate {
     }
 
     async validateToken(token: string) {
-        const publicKey = process.env.JWT_TOKEN_SECRET_KEY
-            .replace(/\\n/g, '\n');
+        const publicKey = process.env.JWT_TOKEN_SECRET_KEY.replace(
+            /\\n/g,
+            '\n',
+        );
         try {
             return await verify(token, publicKey);
         } catch (error) {

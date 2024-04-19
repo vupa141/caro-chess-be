@@ -1,26 +1,26 @@
 import * as nodemailer from 'nodemailer';
-require('dotenv').config()
+require('dotenv').config();
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
     },
 });
 
 interface MailData {
-    from: string,
-    to: string,
-    subject: string,
-    html: string
+    from: string;
+    to: string;
+    subject: string;
+    html: string;
 }
 export async function sendMail(data: MailData) {
     const sendResult = await transporter.sendMail({
         from: data.from,
         to: data.to,
         subject: data.subject,
-        html: data.html
+        html: data.html,
     });
     return sendResult;
 }
@@ -88,7 +88,7 @@ export function createAccountTemplate(verificationCode: string) {
                 </div>
             </body>
         </html>
-        `
+        `;
 }
 
 export function forgotPasswordTemplate(forgotPasswordCode: string) {
@@ -151,5 +151,5 @@ export function forgotPasswordTemplate(forgotPasswordCode: string) {
         </div>
         </body>
     </html>
-    `
+    `;
 }

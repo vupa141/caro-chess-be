@@ -6,9 +6,7 @@ import { GuestUserDto, UpdateUserDto, UserDto } from './dto';
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectModel('User') private userModel: Model<UserDocument>,
-    ) {}
+    constructor(@InjectModel('User') private userModel: Model<UserDocument>) {}
 
     async create(user: UserDto | GuestUserDto): Promise<UserDocument> {
         const createdUser = new this.userModel(user);
@@ -24,12 +22,18 @@ export class UserService {
     }
 
     async findById(id: ObjectId | string): Promise<UserDocument> {
-        return  this.userModel.findOne({ _id: id as Condition<ObjectId>, deleted: false });
+        return this.userModel.findOne({
+            _id: id as Condition<ObjectId>,
+            deleted: false,
+        });
     }
 
-    async update(id: string, data: UpdateUserDto): Promise<UserDocument> {  
-        return await this.userModel.findOneAndUpdate({
-            _id: id
-        }, data)
+    async update(id: string, data: UpdateUserDto): Promise<UserDocument> {
+        return await this.userModel.findOneAndUpdate(
+            {
+                _id: id,
+            },
+            data,
+        );
     }
 }

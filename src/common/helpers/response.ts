@@ -15,16 +15,15 @@ export class SuccessResponse {
     data: any;
 
     constructor(data = {}) {
-        this.code = HTTP_STATUS_CODE.SUCCESS
-        this.message = DEFAULT_SUCCESS_MESSAGE,
-        this.data = data
+        this.code = HTTP_STATUS_CODE.SUCCESS;
+        (this.message = DEFAULT_SUCCESS_MESSAGE), (this.data = data);
     }
 }
 
 export class ErrorResponse {
     code: number;
     message: string;
-    errors: Error[]
+    errors: Error[];
 
     constructor(
         code = HTTP_STATUS_CODE.SERVER_ERROR,

@@ -5,24 +5,41 @@ export const HTTP_STATUS_CODE = {
     FORBIDDEN: 403,
     NOT_FOUND: 404,
     SERVER_ERROR: 500,
-}
+};
 
-export const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+export const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
-export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/
+export const PASSWORD_REGEX =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/;
 
 export enum USER_TYPE {
     NORMAL = 'normal',
-    GUEST = 'guest'
+    GUEST = 'guest',
 }
 
 export enum USER_STATUS {
     UNVERIFIED = 'unverified',
-    VERIFIED = 'verified'
+    VERIFIED = 'verified',
 }
 
 export enum USER_TOKEN_TYPE {
     REFRESH = 'refresh',
     VERIFY_EMAIL = 'verify_email',
-    FORGOT_PASSWORD = 'forgot_password'
+    FORGOT_PASSWORD = 'forgot_password',
+}
+
+export enum GAME_STATUS {
+    WAITNG = 'wating',
+    PLAYING = 'playing',
+    FINISHED = 'finished',
+}
+
+export enum GAME_MODE {
+    PVP = 'pvp',
+    PVB = 'pvb',
+}
+
+export enum MOVE_TYPE {
+    X = '0',
+    O = '1',
 }

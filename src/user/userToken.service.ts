@@ -12,13 +12,17 @@ export class UserTokenService {
         @InjectModel('UserToken') private userTokenModel: Model<UserToken>,
     ) {}
 
-    async createToken(userId: Types.ObjectId, token: string, type: USER_TOKEN_TYPE): Promise<UserToken> {
-        const createdToken =  new this.userTokenModel({ token, userId, type });
+    async createToken(
+        userId: Types.ObjectId,
+        token: string,
+        type: USER_TOKEN_TYPE,
+    ): Promise<UserToken> {
+        const createdToken = new this.userTokenModel({ token, userId, type });
         return await createdToken.save();
     }
 
     async findToken(token: string, type: USER_TOKEN_TYPE): Promise<UserToken> {
-        let expireIn = ''
+        let expireIn = '';
         switch (type) {
             case USER_TOKEN_TYPE.REFRESH:
                 expireIn = process.env.REFRESH_TOKEN_EXPIRE_IN;
@@ -31,17 +35,19 @@ export class UserTokenService {
                 break;
         }
 
-        const time = extractTimeAmountAndUnit(expireIn)
+        const time = extractTimeAmountAndUnit(expireIn);
         return this.userTokenModel.findOne({
             token,
             deleted: false,
             type,
-            createdAt: { 
-                $gt: moment().subtract(
-                    time.amount as moment.DurationInputArg1,
-                    time.unit as moment.DurationInputArg2
-                ).toDate()
-            }
+            createdAt: {
+                $gt: moment()
+                    .subtract(
+                        time.amount as moment.DurationInputArg1,
+                        time.unit as moment.DurationInputArg2,
+                    )
+                    .toDate(),
+            },
         });
     }
 }

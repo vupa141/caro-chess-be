@@ -6,7 +6,7 @@ import { GameSchema } from './models/Game';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{ name: 'game', schema: GameSchema }]),
+        MongooseModule.forFeature([{ name: 'Game', schema: GameSchema }]),
     ],
     providers: [GameGateway, GameService],
 })

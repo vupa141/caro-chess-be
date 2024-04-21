@@ -5,7 +5,7 @@ export class CreateGameDto {
     @IsEnum(GAME_MODE)
     mode: string
     @IsNotEmpty()
-    xPlayer: string
+    xPlayer?: string
     @IsNotEmpty()
-    oPlayer: string
+    oPlayer?: string
 }

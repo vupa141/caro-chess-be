@@ -23,9 +23,13 @@ export class Game {
     status: String;
     @Prop({ required: true, enum: GAME_MODE })
     mode: String;
-    @Prop({ required: true, ref: 'User' })
+    @Prop({ required: function() {
+        return this.mode === GAME_MODE.PVP && !this.oPlayer
+    }, ref: 'User' })
     xPlayer: Types.ObjectId;
-    @Prop({ required: true, ref: 'User' })
+    @Prop({ required: function() {
+        return this.mode === GAME_MODE.PVP && !this.xPlayer
+    }, ref: 'User' })
     oPlayer: Types.ObjectId;
     @Prop({ required: true, default: [] })
     moves: GameMove[];
@@ -41,6 +45,10 @@ class GameMove {
     timeElapsed: number;
     @Prop({ required: true, enum: MOVE_TYPE })
     type: Number;
+    @Prop({ required: true })
+    xPosition: Number;
+    @Prop({ required: true })
+    yPosition: Number;
 }
 
 export const GameSchema = SchemaFactory.createForClass(Game);

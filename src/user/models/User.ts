@@ -40,6 +40,8 @@ export class User {
     createdAt: Date;
     @Prop()
     updatedAt: Date;
+    @Prop()
+    avatar: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

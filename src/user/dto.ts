@@ -31,6 +31,8 @@ export class RegisterDto {
     password: string;
     @Matches(EMAIL_REGEX)
     email: string;
+    @IsNotEmpty()
+    avatar: string;
 }
 
 export class GuestUserDto {

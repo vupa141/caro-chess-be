@@ -3,7 +3,7 @@ import { CreateGameDto, createMoveDto, updateGameDto } from './dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { GameDocument } from './models/Game';
-import { GAME_MODE, GAME_STATUS } from 'src/common/constant';
+import { GAME_MODE, GAME_STATUS, GAME_WINNER } from 'src/common/constant';
 
 @Injectable()
 export class GameService {
@@ -54,5 +54,17 @@ export class GameService {
     async updateOne(_id: string, updateGameDto: updateGameDto) {
         const game = await this.gameModel.updateOne({ _id }, updateGameDto);
         return game;
+    }
+
+    async finishGameIfUserDisconnect(userId: string, gameId: string) {
+        const game = await this.gameModel.findOne({ _id: gameId });
+        if (game) {
+            const winner = game?.xPlayer?.toString() === userId 
+                ? GAME_WINNER.O_PLAYER 
+                : GAME_WINNER.X_PLAYER;
+            const status = GAME_STATUS.FINISHED;
+            const updatedGame = await this.gameModel.updateOne({ _id: gameId }, { status, winner });
+            return updatedGame
+        }
     }
 }

@@ -45,7 +45,7 @@ export class SocketAuthenticationGuard implements CanActivate {
                 code: HTTP_STATUS_CODE.UNAUTHORIZED,
             });
         }
-        client.handshake.loginUser = await this.validateToken(token);
+        client.handshake.auth.loginUser = await this.validateToken(token);
         return true;
     }
 

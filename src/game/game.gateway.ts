@@ -23,19 +23,17 @@ export class GameGateway {
 
     @WebSocketServer() server: Server;
 
-    afterInit(server: Server) {
-        console.log(server);
-        //Do stuffs
-    }
-
-    handleDisconnect(client: Socket) {
-        console.log(`Client Disconnected: ${client.id}`);
-        //Do stuffs
+    async handleDisconnect(client: Socket) {
+        const userId = client.handshake.auth?.loginUser?.id;
+        const gameId = client.handshake.auth?.gameId;
+        if (userId && gameId) {
+           this.gameService.finishGameIfUserDisconnect(userId, gameId);
+        }
+        
     }
 
     handleConnection(client: Socket, ...args: any[]) {
         console.log(`Client Connected: ${client.id}`);
-        //Do stuffs
     }
 
     @UseGuards(SocketAuthenticationGuard)

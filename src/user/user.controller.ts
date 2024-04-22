@@ -102,23 +102,20 @@ export class UserController {
         if (user) {
             if (user.status === USER_STATUS.VERIFIED) {
                 throw new HttpException(
-                    new ErrorResponse(HTTP_STATUS_CODE.BAD_REQUEST, 'Email Existed', [
-                        { key: 'email' },
-                    ]),
+                    new ErrorResponse(
+                        HTTP_STATUS_CODE.BAD_REQUEST,
+                        'Email Existed',
+                        [{ key: 'email' }],
+                    ),
                     HTTP_STATUS_CODE.BAD_REQUEST,
                 );
+            } else {
+                user = await this.userService.update(user._id.toString(), {
+                    username,
+                    password: hashPassword(password),
+                });
             }
-            else {
-                user = await this.userService.update(
-                    user._id.toString(),
-                    {
-                        username,
-                        password: hashPassword(password)
-                    }
-                )
-            }
-        }
-        else {
+        } else {
             user = await this.userService.create({
                 username,
                 email,

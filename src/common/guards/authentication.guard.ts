@@ -4,8 +4,10 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 import { extractToken } from '../helpers/commonFunction';
 import { verify } from 'jsonwebtoken';
+import { HTTP_STATUS_CODE } from '../constant';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -16,7 +18,6 @@ export class AuthenticationGuard implements CanActivate {
             throw new UnauthorizedException();
         }
         request.loginUser = await this.validateToken(token);
-        // TODO: implement logic later
         return true;
     }
 
@@ -26,9 +27,40 @@ export class AuthenticationGuard implements CanActivate {
             '\n',
         );
         try {
-            return await verify(token, publicKey);
+            return verify(token, publicKey);
         } catch (error) {
             throw new UnauthorizedException();
+        }
+    }
+}
+
+@Injectable()
+export class SocketAuthenticationGuard implements CanActivate {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const client = context.switchToWs().getClient();
+        const token = extractToken(client.handshake.auth.token || '');
+        if (!token) {
+            throw new WsException({
+                message: 'Unauthorized',
+                code: HTTP_STATUS_CODE.UNAUTHORIZED,
+            });
+        }
+        client.handshake.loginUser = await this.validateToken(token);
+        return true;
+    }
+
+    async validateToken(token: string) {
+        const publicKey = process.env.JWT_TOKEN_SECRET_KEY.replace(
+            /\\n/g,
+            '\n',
+        );
+        try {
+            return verify(token, publicKey);
+        } catch (error) {
+            throw new WsException({
+                message: 'Unauthorized',
+                code: HTTP_STATUS_CODE.UNAUTHORIZED,
+            });
         }
     }
 }

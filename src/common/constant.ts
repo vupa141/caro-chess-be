@@ -39,6 +39,11 @@ export enum GAME_MODE {
     PVB = 'pvb',
 }
 
+export enum GAME_WINNER {
+    X_PLAYER = 'xPlayer',
+    O_PLAYER = 'oPlayer',
+}
+
 export enum MOVE_TYPE {
     X = '0',
     O = '1',

@@ -3,9 +3,8 @@ import { Document, Types } from 'mongoose';
 import {
     GAME_MODE,
     GAME_STATUS,
+    GAME_WINNER,
     MOVE_TYPE,
-    USER_STATUS,
-    USER_TYPE,
 } from 'src/common/constant';
 
 export type GameDocument = Game & Document<Types.ObjectId>;
@@ -23,16 +22,24 @@ export class Game {
     status: String;
     @Prop({ required: true, enum: GAME_MODE })
     mode: String;
-    @Prop({ required: function() {
-        return this.mode === GAME_MODE.PVP && !this.oPlayer
-    }, ref: 'User' })
+    @Prop({
+        required: function () {
+            return this.mode === GAME_MODE.PVP && !this.oPlayer;
+        },
+        ref: 'User',
+    })
     xPlayer: Types.ObjectId;
-    @Prop({ required: function() {
-        return this.mode === GAME_MODE.PVP && !this.xPlayer
-    }, ref: 'User' })
+    @Prop({
+        required: function () {
+            return this.mode === GAME_MODE.PVP && !this.xPlayer;
+        },
+        ref: 'User',
+    })
     oPlayer: Types.ObjectId;
     @Prop({ required: true, default: [] })
     moves: GameMove[];
+    @Prop({ enum: GAME_WINNER })
+    winner: String;
 }
 
 @Schema({
@@ -42,7 +49,7 @@ class GameMove {
     @Prop()
     createdAt: Date;
     @Prop({ required: true })
-    timeElapsed: number;
+    timeLeft: number;
     @Prop({ required: true, enum: MOVE_TYPE })
     type: Number;
     @Prop({ required: true })

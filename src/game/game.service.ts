@@ -79,7 +79,7 @@ export class GameService {
         return updatedGame;      
     }
 
-    async finishGameIfUserDisconnect(userId: string, gameId: string) {
+    async terminateGame(userId: string, gameId: string) {
         const game = await this.gameModel.findOne({ _id: gameId });
         if (game) {
             const winner = game?.xPlayer?.toString() === userId 

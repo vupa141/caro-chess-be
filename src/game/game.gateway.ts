@@ -28,7 +28,7 @@ export class GameGateway {
         const userId = client.handshake.auth?.loginUser?.id;
         const gameId = client.handshake.auth?.gameId;
         if (userId && gameId) {
-           const finishedGame = await this.gameService.finishGameIfUserDisconnect(userId, gameId);
+           const finishedGame = await this.gameService.terminateGame(userId, gameId);
            if (finishedGame.mode === GAME_MODE.PVP) {
                 this.server.to(gameId).emit('opponent-quit');
            }
@@ -37,6 +37,21 @@ export class GameGateway {
 
     handleConnection(client: Socket, ...args: any[]) {
         console.log(`Client Connected: ${client.id}`);
+    }
+
+    @UseGuards(SocketAuthenticationGuard)
+    @SubscribeMessage('terminate-game')
+    async terminateGame(
+        @ConnectedSocket() socket
+    ) {
+        const userId = socket.handshake.auth?.loginUser?.id;
+        const gameId = socket.handshake.auth?.gameId;
+        if (userId && gameId) {
+           const finishedGame = await this.gameService.terminateGame(userId, gameId);
+           if (finishedGame.mode === GAME_MODE.PVP) {
+                this.server.to(gameId).emit('opponent-quit');
+           }
+        }    
     }
 
     @UseGuards(SocketAuthenticationGuard)

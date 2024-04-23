@@ -32,6 +32,7 @@ export enum GAME_STATUS {
     WAITNG = 'wating',
     PLAYING = 'playing',
     FINISHED = 'finished',
+    TERMINATED = 'terminated'
 }
 
 export enum GAME_MODE {
@@ -45,6 +46,6 @@ export enum GAME_WINNER {
 }
 
 export enum MOVE_TYPE {
-    X = '0',
-    O = '1',
+    X = 0,
+    O = 1,
 }

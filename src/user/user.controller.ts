@@ -238,7 +238,6 @@ export class UserController {
         }
     }
 
-    @UseGuards(AuthenticationGuard)
     @Post('/access-token')
     async getAccessToken(
         @Body() { refreshToken }: { refreshToken: string },
@@ -258,7 +257,7 @@ export class UserController {
                 HTTP_STATUS_CODE.BAD_REQUEST,
             );
         }
-        const accessToken = signToken({ id: req.loginUser._id });
+        const accessToken = signToken({ id: token.userId });
         return new SuccessResponse({ accessToken });
     }
 

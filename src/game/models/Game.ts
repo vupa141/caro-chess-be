@@ -40,6 +40,8 @@ export class Game {
     moves: GameMove[];
     @Prop({ enum: GAME_WINNER })
     winner: String;
+    @Prop({ required: true, ref: 'User' })
+    createdBy: Types.ObjectId;
 }
 
 @Schema({

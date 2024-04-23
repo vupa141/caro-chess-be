@@ -16,6 +16,7 @@ export class GameService {
                 createGameDto.mode === GAME_MODE.PVB
                     ? GAME_STATUS.PLAYING
                     : GAME_STATUS.WAITNG,
+            createdBy: createGameDto?.xPlayer ?? createGameDto.oPlayer
         });
         return await createdGame.save();
     }
@@ -33,21 +34,25 @@ export class GameService {
                         moves: { ...createMoveDto, createdAt: new Date() },
                     },
                 },
+                {
+                    new: true
+                }
             )
             .populate('xPlayer')
-            .populate('oPlayer');
+            .populate('oPlayer')
+            .select('-moves');
         return updatedGame;
     }
 
-    findAll() {
-        return `This action returns all game`;
-    }
-
-    async findOneById(id: string) {
-        const game = await this.gameModel
-            .findById(id)
-            .populate('xPlayer')
-            .populate('oPlayer');
+    async findOneById(id: string, populatePlayer = true) {
+        const game = 
+            populatePlayer 
+            ? await this.gameModel
+                .findById(id)
+                .populate('xPlayer')
+                .populate('oPlayer')
+                .select('-moves')
+            : await this.gameModel.findById(id);
         return game;
     }
 
@@ -56,14 +61,32 @@ export class GameService {
         return game;
     }
 
+    async joinGame(gameId: string, userId: string) {
+        const game = await this.gameModel.findOne({ _id: gameId, status: GAME_STATUS.WAITNG });
+        const updateData = {
+            ...game.xPlayer && {
+                oPlayer: userId
+            },
+            ...game.oPlayer && {
+                xPlayer: userId
+            },
+            status: GAME_STATUS.PLAYING
+        }
+        const updatedGame = await this.gameModel
+            .findOneAndUpdate({ _id: gameId }, updateData, { new: true })
+            .populate('xPlayer')
+            .populate('oPlayer');
+        return updatedGame;      
+    }
+
     async finishGameIfUserDisconnect(userId: string, gameId: string) {
         const game = await this.gameModel.findOne({ _id: gameId });
         if (game) {
             const winner = game?.xPlayer?.toString() === userId 
                 ? GAME_WINNER.O_PLAYER 
                 : GAME_WINNER.X_PLAYER;
-            const status = GAME_STATUS.FINISHED;
-            const updatedGame = await this.gameModel.updateOne({ _id: gameId }, { status, winner });
+            const status = GAME_STATUS.TERMINATED;
+            const updatedGame = await this.gameModel.findOneAndUpdate({ _id: gameId }, { status, winner }, { new: true });
             return updatedGame
         }
     }

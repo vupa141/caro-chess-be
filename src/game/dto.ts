@@ -26,7 +26,7 @@ export class createMoveDto {
     @IsString()
     gameId: string;
     @IsEnum(MOVE_TYPE)
-    type: string;
+    type: number;
     @IsNumber()
     @Min(0)
     @Max(60)

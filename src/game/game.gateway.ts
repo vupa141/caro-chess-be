@@ -16,6 +16,7 @@ import { UseGuards } from '@nestjs/common';
 @WebSocketGateway({
     cors: {
         origin: process.env.CLIENT_HOST,
+        methods: ['GET', 'POST'],
         credentials: true,
     },
 })
